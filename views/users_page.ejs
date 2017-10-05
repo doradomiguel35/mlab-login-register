@@ -18,19 +18,15 @@
 		<title>Users</title>
 	</head>
 	<body>
-	<div class="container">
-		<h1 class="title" id="user"> Profile </h1><br>
-		<img src="http://lorempixel.com/200/200/people/" style="float: left" />
-		<b><% 	
-
-	</div>
-	
-	<div class="container">	
-		<div class="form-group ">
-			<a href="/" target="_blank" type="button" id="button" class="btn btn-primary btn-lg btn-block login-button">Log Out</a>
+		<div class="container">
+			<div class="login">
+				<h1 class="title" id="profile"> Profile </h1><br>
+				<img src="http://lorempixel.com/200/200/people"/>
+				<div class="form-group ">
+						<a href="/" target="_blank" type="button" id="button" class="btn btn-primary btn-lg btn-block login-button">Log Out</a>
+				</div>
+			</div>	
 		</div>
-	</div>
-	<br><br><br>
 
 		<div class="container">
 			<h1 class="title" id="user">Active Users</h1>
@@ -51,42 +47,11 @@
 			      <td><%= accounts[i].email %></td>
 			      <td><%= accounts[i].username%></td>
 			    </tr>
-			    <% } %>
-			   <!--  <tr>
-			      <th scope="row">2</th>
-			      <td><a href="/jacob">Jacob</a></td>
-			      <td>Thornton</td>
-			      <td>@fatass</td>
-			    </tr>
-			    <tr>
-			      <th scope="row">3</th>
-			      <td><a href="/larry">Larry</a></td>
-			      <td>the Bird</td>
-			      <td>@theLegend</td>
-			    </tr> -->
-			    
+			    <% } %> 
 			  </tbody>
 			</table>
 			
 		</div>
-		<script>
-					let jns_parse = JSON.parse(localStorage.getItem('json_accounts'));
-					console.log(jns_parse);
-
-					let html=``;
-					jns_parse.map((name)=>{
-			
-					html += `
-					<tr>
-			      		<td><img src="http://lorempixel.com/100/100/people/"/></td>
-			      		<td>${name.name}</td>
-			      		<td>${name.email}</td>
-			      		<td>${name.username}</td>
-			    	</tr>
-					`;
-					});
-					document.querySelector('#tblNames').innerHTML = html;
-		</script>
 		
 		 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

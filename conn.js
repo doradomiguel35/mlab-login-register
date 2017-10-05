@@ -1,38 +1,3 @@
-// const express = require('express');
-// const bodyParser= require('body-parser');
-// const favicon = require('serve-favicon');
-// const path = require('path');
-// const app = express();
-// const mongoose = require('mongoose');
-// const dotenv = require('dotenv').config();
-// const MongoClient = require('mongodb')
-
-// mongoose.Promise = global.Promise;
-// const schema = new mongoose.Schema({
-// 	username: 'string',
-// 	password: 'string',
-// 	firstname: 'string',
-// 	lastname: 'string',
-// 	emailadd: 'string'
-// });
-
-// const url = "mongodb://signup_storage:lk09mnhg@ds147044.mlab.com:47044/doradotest";
-// const options = {
-// 	useMongoClient: true,	
-// 	promiseLibrary: require('bluebird')
-// };
-// const db = mongoose.createConnection(url,options);
-// const User = db.model('users', schema);
-
-// db.on('open',function(){
-// 	console.log("db connected");	
-// 	User.find(function(err,result){
-// 	if(err)throw err;
-// 	console.log(result);
-// 	});
-// 	db.close();
-// });
-
 const express = require('express');
 const bodyParser= require('body-parser');
 const favicon = require('serve-favicon');
@@ -41,7 +6,7 @@ const app = express();
 const mongoose = require('mongoose');
 const dotenv = require('dotenv').config();
 
-/*>>> setup mongo model <<<*/
+
 mongoose.Promise = global.Promise;
 const accountSchema = new mongoose.Schema({
 	name: 'string',	
@@ -50,7 +15,7 @@ const accountSchema = new mongoose.Schema({
 	password: 'string'
 });
 const uri = "mongodb://signup_storage:lk09mnhg@ds147044.mlab.com:47044/doradotest";
-// const uri = process.env.DB_URI;
+
 const options = {
 	useMongoClient: true,
 	promiseLibrary: require('bluebird'),
@@ -58,32 +23,39 @@ const options = {
 const db = mongoose.createConnection(uri, options);
 const Accounts = db.model('accounts', accountSchema);
 
-/*>>> setup template view engine <<<*/
 app.set('view engine', 'ejs');
 
-/*>>> using express middlewares <<<*/
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('public'));
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(bodyParser.json());
 
-/*>>> defining routes <<<*/
 app.get('/', (req,res)=>{
 	const callback = (err,result) => {
 		if(err)throw err;
 		res.render('login.ejs', {accounts: result});		
 	};
 	Accounts.find(callback);
-	// res.sendFile(__dirname + '/index.html');
 });
 
 app.post('/login',(req,res)=> {
-	user = Accounts.find({"username": req.body.username});
-	pass = Accounts.find({"password": req.body.password});
+	var username = req.body.username;
+	var password = req.body.password;
+	
 
-	if(user && pass){
-		res.render('users_page.ejs',{accounts: result});
-	}
+	Accounts.findOne({username: username, password: password},(err,user)=>{
+		if(err){
+			console.log(err);
+			return res.status(500);
+		}
+		
+		if(!user){
+			console.log("Invalid Username or Password");
+			return res.status(404);
+		}
+		
+		return res.redirect('/users_page');
+	});
 });
 
 app.post('/accounts', (req, res) => {
@@ -96,7 +68,7 @@ app.post('/accounts', (req, res) => {
 	const callback = (err, data)=>{
 		if(err)throw err;
 		console.log('saved to database');
-		res.redirect('/users_page',{username: req.body.username, password: req.body.password});
+		res.redirect('/users_page');
 	};
 	Accounts.create(newAccount, callback);
 });
