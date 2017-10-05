@@ -77,6 +77,15 @@ app.get('/', (req,res)=>{
 	// res.sendFile(__dirname + '/index.html');
 });
 
+app.post('/login',(req,res)=> {
+	user = Accounts.find({"username": req.body.username});
+	pass = Accounts.find({"password": req.body.password});
+
+	if(user && pass){
+		res.render('users_page.ejs',{accounts: result});
+	}
+});
+
 app.post('/accounts', (req, res) => {
 	const newAccount = {
 		"name": req.body.name,
@@ -87,7 +96,7 @@ app.post('/accounts', (req, res) => {
 	const callback = (err, data)=>{
 		if(err)throw err;
 		console.log('saved to database');
-		res.redirect('/users_page');
+		res.redirect('/users_page',{username: req.body.username, password: req.body.password});
 	};
 	Accounts.create(newAccount, callback);
 });
@@ -97,6 +106,7 @@ app.get('/register',(req,res)=>	{
 });
 
 app.get('/users_page',(req,res)=>{
+	console.log(req);
 	const callback = (err,result) => {
 		if(err)throw err;
 		res.render('users_page.ejs', {accounts: result});		
@@ -105,19 +115,23 @@ app.get('/users_page',(req,res)=>{
 })
 
 app.put('/students', (req, res) => {
+	
 	const query = {
 		studentid: req.body.studentid
 	};
+	
 	const update = {
 		$set: {
 			firstname: req.body.firstname,
 			lastname: req.body.lastname
 		}
 	};
+	
 	const options = {
 		sort: {_id: -1},
 		upsert: false
 	};
+
 	const callback = (err, result) => {
 		if (err) return res.send(err);
 		res.send(result);
@@ -125,6 +139,7 @@ app.put('/students', (req, res) => {
 
 	Students.updateOne(query, update, options, callback);
 	// Students.findOneAndUpdate(query, update, options, callback);
+
 });
 
 app.delete('/students', (req, res) => {

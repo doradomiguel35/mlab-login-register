@@ -18,6 +18,20 @@
 		<title>Users</title>
 	</head>
 	<body>
+	<div class="container">
+		<h1 class="title" id="user"> Profile </h1><br>
+		<img src="http://lorempixel.com/200/200/people/" style="float: left" />
+		<b><% 	
+
+	</div>
+	
+	<div class="container">	
+		<div class="form-group ">
+			<a href="/" target="_blank" type="button" id="button" class="btn btn-primary btn-lg btn-block login-button">Log Out</a>
+		</div>
+	</div>
+	<br><br><br>
+
 		<div class="container">
 			<h1 class="title" id="user">Active Users</h1>
 			<table class="table table-inverse">
@@ -53,9 +67,7 @@
 			    
 			  </tbody>
 			</table>
-			<div class="form-group ">
-					<a href="/" target="_blank" type="button" id="button" class="btn btn-primary btn-lg btn-block login-button">Log Out</a>
-			</div>
+			
 		</div>
 		<script>
 					let jns_parse = JSON.parse(localStorage.getItem('json_accounts'));
