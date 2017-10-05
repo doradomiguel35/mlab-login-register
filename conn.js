@@ -37,21 +37,10 @@ app.get('/', (req,res)=>{
 	Accounts.find(callback);
 });
 
-function confirmPass(password,confirm){
-	var pass = password;
-	var con = confirm;
-
-	if(pass != con){
-		alert("Passwords do not match");
-	}
-}
 
 app.post('/login',(req,res)=> {
 	var username = req.body.username;
 	var password = req.body.password;
-	var con = req.body.confirm;
-	
-	confirmPass(password,confirm);
 
 	Accounts.findOne({username: username, password: password},(err,user)=>{
 		if(err){
