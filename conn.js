@@ -27,7 +27,6 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('public'));
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(bodyParser.json());
 
 app.get('/', (req,res)=>{
@@ -38,10 +37,21 @@ app.get('/', (req,res)=>{
 	Accounts.find(callback);
 });
 
+function confirmPass(password,confirm){
+	var pass = password;
+	var con = confirm;
+
+	if(pass != con){
+		alert("Passwords do not match");
+	}
+}
+
 app.post('/login',(req,res)=> {
 	var username = req.body.username;
 	var password = req.body.password;
+	var con = req.body.confirm;
 	
+	confirmPass(password,confirm);
 
 	Accounts.findOne({username: username, password: password},(err,user)=>{
 		if(err){
@@ -110,8 +120,6 @@ app.put('/students', (req, res) => {
 	};
 
 	Students.updateOne(query, update, options, callback);
-	// Students.findOneAndUpdate(query, update, options, callback);
-
 });
 
 app.delete('/students', (req, res) => {
@@ -126,7 +134,6 @@ app.delete('/students', (req, res) => {
 	Students.deleteOne(query, callback);
 });
 
-/*>>> run server and assign port <<<*/
 app.set('port',(process.env.PORT || 3000));
 app.listen(app.get('port'),()=>{
 	console.log('listening on ', app.get('port'));
