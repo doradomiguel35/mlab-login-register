@@ -23,7 +23,7 @@
 				<div class="main-login main-center">
 				<h5>Sign in </h5>
 					
-					<form action="/login" method="POST">	
+					<form action="/tryLogin" method="POST">	
 						<div class="form-group">
 							<label for="username" class="cols-sm-2 control-label">Username</label>
 							<div class="cols-sm-10">
@@ -44,16 +44,20 @@
 							</div>
 						</div>
 
-						<button class="btn btn-primary btn-lg btn-block login-button" type="submit">Login</button>
+						<button class="btn btn-primary btn-lg btn-block login-button" type="submit" id="login">Login</button>
 					</form>	
+						
+
 						
 						<div class="form-group ">
 							<a href="/register" target="_blank" type="button" id="button" class="btn btn-primary btn-lg btn-block login-button">Sign Up</a>
 						</div>
-				
+				<p style="color:red"><center> Username or Password not recognized</center></p>	
 				</div>
 			</div>
+
 		</div>
+
 		 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->

@@ -50,7 +50,30 @@ app.post('/login',(req,res)=> {
 		
 		if(!user){
 			console.log("Invalid Username or Password");
-			return res.status(404);
+			return res.redirect('/tryagain');
+		}
+		
+		return res.redirect('/users_page');
+	});
+});
+
+app.get('/tryagain',(req,res)=>{
+	res.render('error_login.ejs');
+});
+
+app.post('/tryLogin',(req,res)=>{
+	var username = req.body.username;
+	var password = req.body.password;
+
+	Accounts.findOne({username: username, password: password},(err,user)=>{
+		if(err){
+			console.log(err);
+			return res.status(500);
+		}
+		
+		if(!user){
+			console.log("Invalid Username or Password");
+			return res.redirect('/tryagain');
 		}
 		
 		return res.redirect('/users_page');
@@ -85,43 +108,43 @@ app.get('/users_page',(req,res)=>{
 	Accounts.find(callback);
 })
 
-app.put('/students', (req, res) => {
+// app.put('/students', (req, res) => {
 	
-	const query = {
-		studentid: req.body.studentid
-	};
+// 	const query = {
+// 		studentid: req.body.studentid
+// 	};
 	
-	const update = {
-		$set: {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname
-		}
-	};
+// 	const update = {
+// 		$set: {
+// 			firstname: req.body.firstname,
+// 			lastname: req.body.lastname
+// 		}
+// 	};
 	
-	const options = {
-		sort: {_id: -1},
-		upsert: false
-	};
+// 	const options = {
+// 		sort: {_id: -1},
+// 		upsert: false
+// 	};
 
-	const callback = (err, result) => {
-		if (err) return res.send(err);
-		res.send(result);
-	};
+// 	const callback = (err, result) => {
+// 		if (err) return res.send(err);
+// 		res.send(result);
+// 	};
 
-	Students.updateOne(query, update, options, callback);
-});
+// 	Students.updateOne(query, update, options, callback);
+// });
 
-app.delete('/students', (req, res) => {
-	const query = {
-		studentid: req.body.studentid
-	};
-	const callback = (err, result) => {
-		if (err) return res.send(500, err);
-		res.send({message: req.body.studentid + ' got deleted.'});
-	};
+// app.delete('/students', (req, res) => {
+// 	const query = {
+// 		studentid: req.body.studentid
+// 	};
+// 	const callback = (err, result) => {
+// 		if (err) return res.send(500, err);
+// 		res.send({message: req.body.studentid + ' got deleted.'});
+// 	};
 
-	Students.deleteOne(query, callback);
-});
+// 	Students.deleteOne(query, callback);
+// });
 
 app.set('port',(process.env.PORT || 3000));
 app.listen(app.get('port'),()=>{
