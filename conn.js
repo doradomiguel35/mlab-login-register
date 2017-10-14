@@ -61,25 +61,6 @@ app.get('/tryagain',(req,res)=>{
 	res.render('error_login.ejs');
 });
 
-app.post('/tryLogin',(req,res)=>{
-	var username = req.body.username;
-	var password = req.body.password;
-
-	Accounts.findOne({username: username, password: password},(err,user)=>{
-		if(err){
-			console.log(err);
-			return res.status(500);
-		}
-		
-		if(!user){
-			console.log("Invalid Username or Password");
-			return res.redirect('/tryagain');
-		}
-		
-		return res.redirect('/users_page');
-	});
-});
-
 app.post('/accounts', (req, res) => {
 	const newAccount = {
 		"name": req.body.name,
@@ -92,11 +73,38 @@ app.post('/accounts', (req, res) => {
 		console.log('saved to database');
 		res.redirect('/users_page');
 	};
-	Accounts.create(newAccount, callback);
+
+	if(req.body.password != req.body.confirm){
+		res.redirect('/registerError');
+	}
+
+	Accounts.findOne({username: req.body.username,email: req.body.email},(err,user)=>{
+		if(err){
+			console.log("Status 500");
+			return res.status(500);
+		}
+
+		if(user){
+			console.log("Username or Email Address already existed");
+			return res.redirect('/registerExists');
+		}
+
+		Accounts.create(newAccount, callback);
+		
+	});
 });
+
 
 app.get('/register',(req,res)=>	{
 	res.render('register.ejs');
+});
+
+app.get('/registerError',(req,res)=>{
+	res.render('error_register.ejs');
+});
+
+app.get('/registerExists',(req,res)=>{
+	res.render('existed_register.ejs');
 });
 
 app.get('/users_page',(req,res)=>{
