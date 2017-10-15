@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 const mongoose = require('mongoose');
 const dotenv = require('dotenv').config();
-
+const validator = require('email-validator');
 
 mongoose.Promise = global.Promise;
 const accountSchema = new mongoose.Schema({
@@ -48,11 +48,15 @@ app.post('/login',(req,res)=> {
 			return res.status(500);
 		}
 		
+		if(username == "" || password == ""){
+			return res.redirect('/fieldLogin');
+		}
+
 		if(!user){
 			console.log("Invalid Username or Password");
 			return res.redirect('/tryagain');
 		}
-		
+		  
 		return res.redirect('/users_page');
 	});
 });
@@ -74,24 +78,34 @@ app.post('/accounts', (req, res) => {
 		res.redirect('/users_page');
 	};
 
-	if(req.body.password != req.body.confirm){
-		res.redirect('/registerError');
-	}
-
-	Accounts.findOne({username: req.body.username,email: req.body.email},(err,user)=>{
-		if(err){
-			console.log("Status 500");
-			return res.status(500);
-		}
-
-		if(user){
-			console.log("Username or Email Address already existed");
-			return res.redirect('/registerExists');
-		}
-
-		Accounts.create(newAccount, callback);
+	var val = validator.validate(req.body.email);
 		
-	});
+		if(req.body.name == "" || req.body.email == "" || req.body.username == "" || req.body.password == "" || req.body.confirm == ""){
+			res.redirect('/fieldsRegister');
+		}
+
+		if(val == false){
+			res.redirect('/emailRegister');
+		}
+
+		if(req.body.password != req.body.confirm){
+			res.redirect('/registerError');
+		}
+
+		Accounts.findOne({username: req.body.username,email: req.body.email},(err,user)=>{
+			if(err){
+				console.log("Status 500");
+				return res.status(500);
+			}
+
+			if(user){
+				console.log("Username or Email Address already existed");
+				return res.redirect('/registerExists');
+			}
+
+			Accounts.create(newAccount, callback);
+			
+		});
 });
 
 
@@ -107,6 +121,18 @@ app.get('/registerExists',(req,res)=>{
 	res.render('existed_register.ejs');
 });
 
+app.get('/emailRegister',(req,res)=>{
+	res.render('email_register.ejs');
+});
+
+app.get('/fieldsRegister',(req,res)=>{
+	res.render('fields_register.ejs');
+});
+
+app.get('/fieldLogin',(req,res)=>{
+	res.render('field_login.ejs');
+});
+
 app.get('/users_page',(req,res)=>{
 	console.log(req);
 	const callback = (err,result) => {
@@ -116,43 +142,6 @@ app.get('/users_page',(req,res)=>{
 	Accounts.find(callback);
 })
 
-// app.put('/students', (req, res) => {
-	
-// 	const query = {
-// 		studentid: req.body.studentid
-// 	};
-	
-// 	const update = {
-// 		$set: {
-// 			firstname: req.body.firstname,
-// 			lastname: req.body.lastname
-// 		}
-// 	};
-	
-// 	const options = {
-// 		sort: {_id: -1},
-// 		upsert: false
-// 	};
-
-// 	const callback = (err, result) => {
-// 		if (err) return res.send(err);
-// 		res.send(result);
-// 	};
-
-// 	Students.updateOne(query, update, options, callback);
-// });
-
-// app.delete('/students', (req, res) => {
-// 	const query = {
-// 		studentid: req.body.studentid
-// 	};
-// 	const callback = (err, result) => {
-// 		if (err) return res.send(500, err);
-// 		res.send({message: req.body.studentid + ' got deleted.'});
-// 	};
-
-// 	Students.deleteOne(query, callback);
-// });
 
 app.set('port',(process.env.PORT || 3000));
 app.listen(app.get('port'),()=>{
