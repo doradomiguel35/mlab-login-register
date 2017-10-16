@@ -84,28 +84,30 @@ app.post('/accounts', (req, res) => {
 			res.redirect('/fieldsRegister');
 		}
 
-		if(val == false){
+		else if(val == false){
 			res.redirect('/emailRegister');
 		}
 
-		if(req.body.password != req.body.confirm){
+		else if(req.body.password != req.body.confirm){
 			res.redirect('/registerError');
 		}
 
-		Accounts.findOne({username: req.body.username,email: req.body.email},(err,user)=>{
-			if(err){
-				console.log("Status 500");
-				return res.status(500);
-			}
+		else{
+			Accounts.findOne({username: req.body.username,email: req.body.email},(err,user)=>{
+				if(err){
+					console.log("Status 500");
+					return res.status(500);
+				}
 
-			if(user){
-				console.log("Username or Email Address already existed");
-				return res.redirect('/registerExists');
-			}
-
-			Accounts.create(newAccount, callback);
+				if(user){
+					console.log("Username or Email Address already existed");
+					return res.redirect('/registerExists');
+				}
+				console.log(req.body.email);	
+				Accounts.create(newAccount, callback);
 			
-		});
+			});
+		}
 });
 
 
